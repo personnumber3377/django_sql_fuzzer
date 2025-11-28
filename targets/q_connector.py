@@ -1,8 +1,14 @@
-# fuzzer/targets/q_connector.py
 from django.db.models import Q
-from app.models import Author
+from django.core.exceptions import FieldError
+from django_sql_fuzzer.app.models import Author
 
-def q_connector(payload):
-    q = Q(name=payload, _connector=payload)
-    qs = Author.objects.filter(q)
-    list(qs)
+def q_connector(payload: str):
+    """
+    Past vulnerability: custom Q._connector strings could break SQL generation.
+    """
+    try:
+        q = Q(name="test")
+        q._connector = payload  # dangerous
+        Author.objects.filter(q).exists()
+    except Exception:
+        return

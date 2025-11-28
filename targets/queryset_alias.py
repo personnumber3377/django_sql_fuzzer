@@ -1,7 +1,10 @@
-# fuzzer/targets/queryset_alias.py
 from django.db.models import F
-from app.models import Company
+from django_sql_fuzzer.app.models import Company
+from django.core.exceptions import FieldError
 
-def qs_alias(payload: str):
-    qs = Company.objects.values(**{payload: F("ceo__salary")})
-    list(qs)
+def qs_alias_api(payload: str):
+    try:
+        qs = Company.objects.alias(**{payload: F("id")})
+        list(qs)
+    except Exception:
+        return
