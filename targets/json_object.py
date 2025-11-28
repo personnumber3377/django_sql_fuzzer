@@ -1,6 +1,6 @@
 from django.db.models.functions import JSONObject, Lower
 from django.db.models import F, Value
-from django_sql_fuzzer.app.models import Author
+from app.models import Author
 
 def json_object(payload: str):
     try:

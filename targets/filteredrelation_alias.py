@@ -1,7 +1,7 @@
 from django.db.models import FilteredRelation, Q, F
 from django.core.exceptions import FieldError
 from django.db.utils import OperationalError
-from django_sql_fuzzer.app.models import Author
+from app.models import Author
 
 def filteredrelation_alias(payload: str):
     """

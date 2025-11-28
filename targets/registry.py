@@ -1,17 +1,21 @@
-# fuzzer/targets/registry.py
-from targets.queryset_alias import qs_alias
-from targets.queryset_json import qs_json_value, qs_json_valuelist
-from targets.queryset_extra import qs_extra
-from targets.queryset_alias_api import qs_alias_api
-from targets.filtered_relation_alias import filteredrelation_alias
+from targets.filteredrelation_alias import filteredrelation_alias
 from targets.q_connector import q_connector
+from targets.queryset_alias_api import qs_alias_api
+from targets.queryset_annotate import qs_annotate
+from targets.queryset_aggregate import qs_agg
+from targets.json_object import json_object
+from targets.extract_function import extract_function
+from targets.trunc_function import trunc_function
+from targets.concat import concat_test
 
 TARGETS = [
-    qs_alias,
-    qs_json_value,
-    qs_json_valuelist,
-    # qs_extra,
-    qs_alias_api,
     filteredrelation_alias,
     q_connector,
+    qs_alias_api,
+    qs_annotate,
+    qs_agg,
+    json_object,
+    extract_function,
+    trunc_function,
+    concat_test,
 ]

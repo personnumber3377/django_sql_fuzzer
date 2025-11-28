@@ -1,5 +1,5 @@
 from django.db.models import Avg
-from django_sql_fuzzer.app.models import Company
+from app.models import Company
 
 def qs_agg(payload: str):
     try:

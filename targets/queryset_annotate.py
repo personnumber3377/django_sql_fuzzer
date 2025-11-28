@@ -1,5 +1,5 @@
 from django.db.models import F, Value, CharField
-from django_sql_fuzzer.app.models import Author
+from app.models import Author
 
 def qs_annotate(payload: str):
     try:

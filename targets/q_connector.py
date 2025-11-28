@@ -1,6 +1,6 @@
 from django.db.models import Q
 from django.core.exceptions import FieldError
-from django_sql_fuzzer.app.models import Author
+from app.models import Author
 
 def q_connector(payload: str):
     """

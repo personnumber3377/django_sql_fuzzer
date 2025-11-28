@@ -1,5 +1,5 @@
 from django.db.models import F
-from django_sql_fuzzer.app.models import Company
+from app.models import Company
 from django.core.exceptions import FieldError
 
 def qs_alias_api(payload: str):
