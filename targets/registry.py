@@ -8,6 +8,19 @@ from targets.extract_function import extract_function
 from targets.trunc_function import trunc_function
 from targets.concat import concat_test
 
+from targets.json_key import json_key
+from targets.window import window
+from targets.extra import extra
+from targets.order_by import order_by
+
+
+'''
+-rw-r--r-- 1 oof oof  473 Nov 28 20:08 json_key.py
+-rw-r--r-- 1 oof oof  594 Nov 28 20:07 window.py
+-rw-r--r-- 1 oof oof  512 Nov 28 20:07 extra.py
+-rw-r--r-- 1 oof oof  443 Nov 28 20:07 order_by.py
+'''
+
 TARGETS = [
     filteredrelation_alias,
     q_connector,
@@ -18,4 +31,8 @@ TARGETS = [
     extract_function,
     trunc_function,
     concat_test,
+    json_key,
+    window,
+    extra,
+    order_by,
 ]
