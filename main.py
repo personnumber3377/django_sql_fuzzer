@@ -2,15 +2,15 @@
 import atheris
 import sys
 
-from .django_setup import configure_django
+from django_setup import configure_django
 
 configure_django()
 
 
-from .database_seed import seed_all
-from .util.input_sanitizer import sanitize_input
-from .targets.registry import TARGETS
-from .util.errors import SAFE_EXCEPTIONS, IGNORED_MESSAGES
+from database_seed import seed_all
+from util.input_sanitizer import sanitize_input
+from targets.registry import TARGETS
+from util.errors import SAFE_EXCEPTIONS, IGNORED_MESSAGES
 
 # configure_django()
 seed_all()

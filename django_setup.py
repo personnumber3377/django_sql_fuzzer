@@ -11,7 +11,7 @@ def configure_django():
         SECRET_KEY="fuzz_secret",
         INSTALLED_APPS=[
             "app",
-            "fuzzer_project",
+            # "fuzzer_project",
         ],
         DATABASES={
             "default": {
