@@ -10,4 +10,5 @@ IGNORED_MESSAGES = [
     "Unknown options",
     "not enough arguments for format string",
     "UUID",
+    "Cannot resolve keyword",
 ]

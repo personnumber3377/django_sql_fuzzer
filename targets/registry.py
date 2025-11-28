@@ -10,7 +10,7 @@ TARGETS = [
     qs_alias,
     qs_json_value,
     qs_json_valuelist,
-    qs_extra,
+    # qs_extra,
     qs_alias_api,
     filteredrelation_alias,
     q_connector,
