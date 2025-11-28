@@ -211,6 +211,31 @@ class Publisher(models.Model):
     class Meta:
         app_label = 'app'
 
+'''
+class Book(models.Model):
+
+    # name = models.CharField(max_length=100)
+    author = models.ForeignKey(Author, on_delete=models.CASCADE)
+
+    isbn = models.CharField(max_length=9)
+    name = models.CharField(max_length=255)
+    pages = models.IntegerField()
+    rating = models.FloatField()
+    price = models.DecimalField(decimal_places=2, max_digits=6)
+    authors = models.ManyToManyField(Author)
+    contact = models.ForeignKey(Author, models.CASCADE, related_name="book_contact_set")
+    publisher = models.ForeignKey(Publisher, models.CASCADE)
+    pubdate = models.DateField()
+
+    def __str__(self):
+        return self.name
+    class Meta:
+        app_label = 'app'
+
+'''
+
+
+'''
 class Book(models.Model):
     isbn = models.CharField(max_length=9)
     name = models.CharField(max_length=255)
@@ -221,6 +246,20 @@ class Book(models.Model):
     contact = models.ForeignKey(Author, models.CASCADE, related_name="book_contact_set")
     publisher = models.ForeignKey(Publisher, models.CASCADE)
     pubdate = models.DateField()
+'''
+
+
+class Author(models.Model):
+    name = models.CharField(max_length=100)
+
+    def __str__(self):
+        return self.name
+    class Meta:
+        app_label = 'app'
+
+class Book(models.Model):
+    name = models.CharField(max_length=100)
+    author = models.ForeignKey(Author, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name

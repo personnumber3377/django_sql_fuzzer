@@ -24,10 +24,10 @@ def seed_companies():
 
 
 def seed_books_authors():
-    a1 = Author.objects.create(name="Author One", age=30)
-    a2 = Author.objects.create(name="Author Two", age=40)
+    a1 = Author.objects.create(name="Author One")
+    a2 = Author.objects.create(name="Author Two")
     p = Publisher.objects.create(name="Publisher House", num_awards=2)
-
+    '''
     b1 = Book.objects.create(
         isbn="123456789",
         pages=200,
@@ -48,8 +48,13 @@ def seed_books_authors():
         pubdate=date(2012, 2, 2),
         name="Book Two",
     )
-    b1.authors.add(a1)
-    b2.authors.add(a2)
+    '''
+
+    b1 = Book.objects.create(name="Name 1", author=a1)
+    b2 = Book.objects.create(name="Name 2", author=a2)
+
+    # b1.authors.add(a1)
+    # b2.authors.add(a2)
 
 
 def seed_durations():

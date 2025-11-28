@@ -1,0 +1,14 @@
+
+https://github.com/django/django/commit/51711717098d3f469f795dfa6bc3758b24f69ef7
+
+
+
+injected_name" from "annotations_book"; --
+
+
+then we want to pass this to objects.annotate ???
+
+
+
+
+
