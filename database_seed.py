@@ -3,7 +3,7 @@ from datetime import datetime, timedelta, date, time
 from decimal import Decimal
 from django.utils import timezone
 
-from app.models import (
+from .app.models import (
     Company, Employee, Author, Publisher, Book, Store,
     Experiment, DTModel, DurationFieldModel, JSONFieldModel,
 )
