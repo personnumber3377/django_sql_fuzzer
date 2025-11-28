@@ -1,0 +1,16 @@
+from django.db.models.functions import JSONObject, Lower
+from django.db.models import F, Value
+from django_sql_fuzzer.app.models import Author
+
+def json_object(payload: str):
+    try:
+        qs = Author.objects.annotate(
+            obj=JSONObject(
+                name=Lower("name"),
+                bad_key=payload,
+                age=F("age") + 1,
+            )
+        )
+        qs.first()
+    except Exception:
+        return
