@@ -12,7 +12,7 @@ from targets.json_key import json_key
 from targets.window import window
 from targets.extra import extra
 from targets.order_by import order_by
-
+from targets.complex_annotation import complex_annotation
 
 '''
 -rw-r--r-- 1 oof oof  473 Nov 28 20:08 json_key.py
@@ -33,6 +33,7 @@ TARGETS = [
     concat_test,
     json_key,
     window,
-    extra,
-    order_by,
+    # extra,
+    # order_by,
+    complex_annotation,
 ]

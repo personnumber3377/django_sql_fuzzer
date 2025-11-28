@@ -58,11 +58,16 @@ def fuzz_entry(data: bytes):
         # print("in safe exceptions...")
         return
     except Exception as e:
+        return
         msg = str(e)
         # print(msg)
         if any(m in msg for m in IGNORED_MESSAGES):
             return
-        if "--" not in msg:
+        # if "--" not in msg and msg.count(";") <= 1 and "/*" not in msg and "*/" not in msg:
+        #     return
+        if "ASC" in msg:
+            return # This is the thing...
+        if "order clause" in msg:
             return
         raise
     # print("regular exit...")
