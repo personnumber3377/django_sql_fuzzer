@@ -28,11 +28,13 @@ def fuzz_entry(data: bytes):
     payload = s[1:]
 
     try:
+        # print("calling "+str(TARGETS[idx])+" ...")
         TARGETS[idx](payload)
     except SAFE_EXCEPTIONS:
         return
     except Exception as e:
         msg = str(e)
+        print(msg)
         if any(m in msg for m in IGNORED_MESSAGES):
             return
         raise
