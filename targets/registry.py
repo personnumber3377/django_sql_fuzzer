@@ -36,4 +36,5 @@ TARGETS = [
     # extra,
     # order_by,
     complex_annotation,
+    filtered_relation_new, # This is for the newest SQL injection bug... Use this one please...
 ]
