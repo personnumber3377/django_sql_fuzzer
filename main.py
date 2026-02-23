@@ -3,6 +3,9 @@ import atheris
 import sys
 import os
 
+class SQLValidationError(Exception): # Use when checking the generated SQL query for potentially dangerous stuff...
+    pass
+
 if os.getenv("TESTING"): # Import without atheris for quicker run...
     from django_setup import configure_django
     configure_django()
@@ -21,6 +24,9 @@ else:
         from util.errors import SAFE_EXCEPTIONS, IGNORED_MESSAGES
         seed_all()
 
+def check_sql_query(sql_query_string):
+    return True
+
 def fuzz_entry(data: bytes):
     if len(data) < 2:
         return
@@ -36,7 +42,8 @@ def fuzz_entry(data: bytes):
         sql_query = TARGETS[idx](payload)
         if sql_query != None:
             # Check the query thing...
-            check_sql_query(sql_query)
+            if not check_sql_query(sql_query):
+                raise SQLValidationError
     except SAFE_EXCEPTIONS as e:
         print(str(e))
         print("in safe exceptions...")
