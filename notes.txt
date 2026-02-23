@@ -1,2 +1,7 @@
 FieldError: Cannot resolve keyword '' into field. Choices are: age, alias, book, book_contact_set, friends, goes_by, id, name, rating
 
+
+
+
+Copied the original corpus to ~/django_sql_corpus
+
