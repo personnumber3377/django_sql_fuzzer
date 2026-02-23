@@ -4,61 +4,39 @@ import sys
 import os
 
 if os.getenv("TESTING"): # Import without atheris for quicker run...
-
     from django_setup import configure_django
-
     configure_django()
-
-
     from database_seed import seed_all
     from util.input_sanitizer import sanitize_input
     from targets.registry import TARGETS
     from util.errors import SAFE_EXCEPTIONS, IGNORED_MESSAGES
-
-
-    # configure_django()
     seed_all()
 else:
-
     with atheris.instrument_imports():
-
         from django_setup import configure_django
-
         configure_django()
-
-
         from database_seed import seed_all
         from util.input_sanitizer import sanitize_input
         from targets.registry import TARGETS
         from util.errors import SAFE_EXCEPTIONS, IGNORED_MESSAGES
-
-
-        # configure_django()
         seed_all()
 
-
 def fuzz_entry(data: bytes):
-    # print(data)
     if len(data) < 2:
         return
     idx = data[0] % len(TARGETS)
-    
     s = data[1:]
     s = sanitize_input(s)
     if s is None or len(s) < 2:
         print("Invalid input...")
         return
-
-    
     payload = s # s[1:]
-
     try:
         print("calling "+str(TARGETS[idx])+" ...")
         sql_query = TARGETS[idx](payload)
         if sql_query != None:
             # Check the query thing...
             check_sql_query(sql_query)
-
     except SAFE_EXCEPTIONS as e:
         print(str(e))
         print("in safe exceptions...")
@@ -85,7 +63,6 @@ def fuzz_entry(data: bytes):
 def main():
     atheris.Setup(sys.argv, fuzz_entry)
     atheris.Fuzz()
-
 
 if __name__ == "__main__":
     main()
