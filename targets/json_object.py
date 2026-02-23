@@ -3,14 +3,12 @@ from django.db.models import F, Value
 from app.models import Author
 
 def json_object(payload: str):
-    try:
-        qs = Author.objects.annotate(
-            obj=JSONObject(
-                name=Lower("name"),
-                bad_key=payload,
-                age=F("age") + 1,
-            )
+    qs = Author.objects.annotate(
+        obj=JSONObject(
+            name=Lower("name"),
+            bad_key=payload,
+            age=F("age") + 1,
         )
-        qs.first()
-    except Exception:
-        return
+    )
+    qs.first()
+    return str(qs.query)

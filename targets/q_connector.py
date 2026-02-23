@@ -6,9 +6,7 @@ def q_connector(payload: str):
     """
     Past vulnerability: custom Q._connector strings could break SQL generation.
     """
-    try:
-        q = Q(name="test")
-        q._connector = payload  # dangerous
-        Author.objects.filter(q).exists()
-    except Exception:
-        return
+    q = Q(name="test")
+    q._connector = payload  # dangerous
+    qs = Author.objects.filter(q).exists()
+    return str(qs.query)
