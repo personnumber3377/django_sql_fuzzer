@@ -21,6 +21,7 @@ def filteredrelation_alias(payload: str):
         # print(qs.explain())         # <--- absolutely required
 
         # Force Django to SELECT the annotation column
+        print("payload: "+str(payload))
         list(qs.values(payload))    # <--- also required
 
     except (FieldError, ValueError, TypeError) as e:

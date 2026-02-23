@@ -54,7 +54,11 @@ def fuzz_entry(data: bytes):
 
     try:
         print("calling "+str(TARGETS[idx])+" ...")
-        TARGETS[idx](payload)
+        sql_query = TARGETS[idx](payload)
+        if sql_query != None:
+            # Check the query thing...
+            check_sql_query(sql_query)
+
     except SAFE_EXCEPTIONS as e:
         print(str(e))
         print("in safe exceptions...")
