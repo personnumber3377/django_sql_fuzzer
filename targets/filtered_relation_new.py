@@ -2,7 +2,7 @@
 from django.db.models import FilteredRelation, Q, F
 from app.models import Author
 
-def filteredrelation_alias(payload: str):
+def filtered_relation_new(payload: str):
     qs = Book.objects.annotate(
         **{payload: FilteredRelation("author")}
     ).order_by(payload)

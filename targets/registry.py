@@ -14,6 +14,9 @@ from targets.extra import extra
 from targets.order_by import order_by
 from targets.complex_annotation import complex_annotation
 
+# Newest stuff here
+from targets.filtered_relation_new import filtered_relation_new
+
 '''
 -rw-r--r-- 1 oof oof  473 Nov 28 20:08 json_key.py
 -rw-r--r-- 1 oof oof  594 Nov 28 20:07 window.py
