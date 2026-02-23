@@ -53,7 +53,7 @@ def fuzz_entry(data: bytes):
     payload = s # s[1:]
 
     try:
-        # print("calling "+str(TARGETS[idx])+" ...")
+        print("calling "+str(TARGETS[idx])+" ...")
         TARGETS[idx](payload)
     except SAFE_EXCEPTIONS as e:
         print(str(e))
