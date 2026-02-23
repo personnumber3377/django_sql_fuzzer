@@ -46,6 +46,7 @@ def fuzz_entry(data: bytes):
     s = data[1:]
     s = sanitize_input(s)
     if s is None or len(s) < 2:
+        print("Invalid input...")
         return
 
     
@@ -54,13 +55,17 @@ def fuzz_entry(data: bytes):
     try:
         # print("calling "+str(TARGETS[idx])+" ...")
         TARGETS[idx](payload)
-    except SAFE_EXCEPTIONS:
-        # print("in safe exceptions...")
+    except SAFE_EXCEPTIONS as e:
+        print(str(e))
+        print("in safe exceptions...")
         return
     except Exception as e:
-        return
+        # return
         msg = str(e)
-        # print(msg)
+        print(msg)
+        print("poopooo")
+        print(msg)
+        print(IGNORED_MESSAGES)
         if any(m in msg for m in IGNORED_MESSAGES):
             return
         # if "--" not in msg and msg.count(";") <= 1 and "/*" not in msg and "*/" not in msg:

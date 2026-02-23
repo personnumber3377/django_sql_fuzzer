@@ -4,6 +4,7 @@ SAFE_EXCEPTIONS = (
     LookupError,  # includes KeyError, IndexError
 )
 
+
 IGNORED_MESSAGES = [
     "Column aliases cannot contain whitespace",
     "Invalid option name",
@@ -12,3 +13,6 @@ IGNORED_MESSAGES = [
     "UUID",
     # "Cannot resolve keyword",
 ]
+
+
+# IGNORED_MESSAGES = []
