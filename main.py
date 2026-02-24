@@ -28,6 +28,8 @@ else:
 # def check_sql_query(sql_query_string):
 #     return True
 
+
+'''
 def check_sql_semantics(sql: str, payload: str):
     # print("Checking!!!!!!!"*1000)
     # 1. Raw dangerous tokens
@@ -48,6 +50,67 @@ def check_sql_semantics(sql: str, payload: str):
         if parts[0] in sql and parts[1] in sql:
             return False
     return True
+'''
+
+import re
+
+class SQLInjectionDetected(Exception):
+    pass
+
+
+SQL_KEYWORDS = [
+    " union ",
+    " select ",
+    " where ",
+    " join ",
+    " on ",
+    " order ",
+    " group ",
+    " having ",
+    " limit ",
+]
+
+
+def check_sql_semantics(sql: str, payload: str):
+    sql_lower = sql.lower()
+    payload_lower = payload.lower()
+
+    # 1️⃣ Comment-based truncation
+    if "--" in sql or "/*" in sql or "*/" in sql:
+        raise SQLInjectionDetected("Comment token present in SQL")
+
+    # 2️⃣ Ensure payload appears
+    if payload not in sql:
+        raise SQLInjectionDetected("Payload disappeared from SQL")
+
+    # 3️⃣ Detect payload appearing outside identifier context
+    # If payload is followed or preceded by spaces + keyword,
+    # it's likely escaped identifier position.
+    for kw in SQL_KEYWORDS:
+        if payload_lower + kw in sql_lower:
+            raise SQLInjectionDetected(
+                f"Payload transitions into SQL keyword: {kw.strip()}"
+            )
+
+    # 4️⃣ Detect JOIN condition replacement
+    # If "ON 1=1" appears, that's structural change
+    if re.search(r"\bon\s+1\s*=\s*1\b", sql_lower):
+        raise SQLInjectionDetected("JOIN condition replaced with ON 1=1")
+
+    # 5️⃣ Period alias confusion
+    if "." in payload:
+        parts = payload.split(".", 1)
+        # If split parts appear independently, alias was parsed as table.column
+        if all(part in sql for part in parts):
+            raise SQLInjectionDetected("Alias split on period")
+
+    # 6️⃣ Ensure payload appears only once
+    if sql.count(payload) > 3:
+        # More than expected occurrences → possible grammar expansion
+        raise SQLInjectionDetected("Payload expanded unexpectedly")
+
+    return True
+
 
 def fuzz_entry(data: bytes):
     if len(data) < 2:
