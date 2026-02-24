@@ -3,6 +3,7 @@ def sanitize_input(data: bytes):
     try:
         s = data.decode("utf-8")
     except Exception:
+        # print("UTF-8 decoding error...")
         return None
     if "(" in s or ")" in s:
         return None

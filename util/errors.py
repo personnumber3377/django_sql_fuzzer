@@ -1,7 +1,9 @@
 # fuzzer/util/errors.py
+from django.core.exceptions import FieldError
 SAFE_EXCEPTIONS = (
     ValueError, TypeError, OverflowError,
     LookupError,  # includes KeyError, IndexError
+    FieldError,
 )
 
 

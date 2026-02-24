@@ -5,3 +5,44 @@ FieldError: Cannot resolve keyword '' into field. Choices are: age, alias, book,
 
 Copied the original corpus to ~/django_sql_corpus
 
+
+
+
+
+
+This here:
+
+
+def testing_main(): # Stuff...
+    while True:
+        print("Executing test loop...")
+        pwn = bytes([random.randrange(256) for _ in range(random.randrange(256))])
+        # Override 
+        # rand_bytes = bytes([0x1a, 0x41, 0x19, 0xdb, 0x85])
+        # 82 2a e7 87 b6
+        # rand_bytes = bytes([0x82, 0x2a, 0xe7, 0x87, 0xb6])
+        
+        pwn = bytes([0x82, 0x2a, 0xe7, 0x87, 0xb6])
+
+        # pwn = bytes([0x82, 0x01, 0x01]) # The index and then a 0x01 byte for the alias stuff. Should not work...
+
+        # pwn = bytes([0x82, 0x2a, 0xe7, 0x87])
+
+        # payload_thing = ";SELECT 1"
+        # pwn += payload_thing.encode("ascii")
+
+        print(pwn)
+
+
+        try:
+            fuzz_entry(pwn)
+        except Exception as e:
+            print("Got this exception here: "+str(e))
+            fh = open("failed.bin", "wb")
+            fh.write(pwn)
+            fh.close()
+            raise e
+    return 
+
+can potentially cause some injection, since there is a unicode character...
+

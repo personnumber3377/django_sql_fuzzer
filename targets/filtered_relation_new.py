@@ -7,5 +7,7 @@ def filtered_relation_new(payload: str):
     qs = Book.objects.annotate(
         **{payload: FilteredRelation("author")}
     ).order_by(payload)
+    # print("Here is the query: "+str(str(qs.query)))
     list(qs)
+    return str(qs.query)
 

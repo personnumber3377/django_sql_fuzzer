@@ -8,5 +8,6 @@ def q_connector(payload: str):
     """
     q = Q(name="test")
     q._connector = payload  # dangerous
-    qs = Author.objects.filter(q).exists()
+    qs = Author.objects.filter(q)
+    list(qs) # Actually execute the query
     return str(qs.query)
