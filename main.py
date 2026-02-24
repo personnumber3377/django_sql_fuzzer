@@ -76,9 +76,17 @@ SQL_KEYWORDS = [
     " limit ",
 ]
 
-def strip_string_literals(sql: str) -> str:
+def strip_sql_strings_and_identifiers(sql: str) -> str:
     # Remove single-quoted string literals
-    return re.sub(r"'([^']|'')*'", "''", sql)
+    sql = re.sub(r"'([^']|'')*'", "''", sql)
+
+    # Remove double-quoted identifiers / strings
+    sql = re.sub(r'"([^"]|"")*"', '""', sql)
+
+    # Remove MySQL backtick identifiers
+    sql = re.sub(r'`[^`]*`', '``', sql)
+
+    return sql
 
 
 def check_sql_semantics(sql: str, payload: str):
@@ -89,7 +97,7 @@ def check_sql_semantics(sql: str, payload: str):
     payload_lower = payload.lower()
 
     # Strip string literals before structural analysis
-    sql_code = strip_string_literals(sql)
+    sql_code = strip_sql_strings_and_identifiers(sql)
     sql_code_lower = sql_code.lower()
 
     # 1️⃣ Comment tokens outside string literals
