@@ -4,7 +4,7 @@ import sys
 import os
 import random
 
-DEBUG = True
+DEBUG = False
 
 def dprint(msg):
     if DEBUG:
