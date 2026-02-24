@@ -172,3 +172,25 @@ SQLInjectionDetected: Alias interpreted as table.column
 
 
 
+SELECT `app_jsonfieldmodel`.`id`, `app_jsonfieldmodel`.`data`, JSON_EXTRACT(`app_jsonfieldmodel`.`data`, $."7liregext773777776") AS `val` FROM `app_jsonfieldmodel`
+#1036	REDUCE cov: 1530 ft: 3406 corp: 113/1511b lim: 87 exec/s: 1036 rss: 76Mb L: 25/81 MS: 4 ManualDict-ShuffleBytes-ChangeByte-EraseBytes- DE: "\" OR 1=1 --"-
+SELECT `app_author`.`id`, `app_author`.`name`, CONCAT_WS('',  OR 1=1 --t, test) AS `c` FROM `app_author`
+
+ === Uncaught Python exception: ===
+SQLInjectionDetected: Comment token present outside string literal
+Traceback (most recent call last):
+  File "/home/oof/django_sql_fuzzer/main.py", line 169, in fuzz_entry
+    check_sql_semantics(sql_query, payload)
+  File "/home/oof/django_sql_fuzzer/main.py", line 105, in check_sql_semantics
+    raise SQLInjectionDetected("Comment token present outside string literal")
+SQLInjectionDetected: Comment token present outside string literal
+
+==46830== ERROR: libFuzzer: fuzz target exited
+SUMMARY: libFuzzer: fuzz target exited
+MS: 1 PersAutoDict- DE: "\" OR 1=1 --"-; base unit: 308ce2251e0c6d59923ac9602e9e12b9b538911e
+0x22,0x20,0x4f,0x52,0x20,0x31,0x3d,0x31,0x20,0x2d,0x2d,0x74,
+\" OR 1=1 --t
+artifact_prefix='./'; Test unit written to ./crash-b506da5b9fec73631ad628ff5078993e465e9883
+Base64: IiBPUiAxPTEgLS10
+(venv) oof@oof-h8-1440eo:~/django_sql_fuzzer$ cat ./crash-b506da5b9fec73631ad628ff5078993e465e9883 
+" OR 1=1 --t(venv) oof@oof-h8-1440eo:~/django_

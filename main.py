@@ -140,8 +140,8 @@ def check_sql_semantics(sql: str, payload: str):
     '''
 
     # 6️⃣ Excessive payload expansion
-    if sql.count(payload) > 5:
-        raise SQLInjectionDetected("Payload expanded unexpectedly")
+    # if sql.count(payload) > 5:
+    #     raise SQLInjectionDetected("Payload expanded unexpectedly")
 
     return True
 

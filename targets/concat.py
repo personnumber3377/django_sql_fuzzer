@@ -3,6 +3,7 @@ from django.db.models import Value, CharField
 from app.models import Author
 
 def concat_test(payload: str):
+    # return None
     qs = Author.objects.annotate(
         c=Concat(
             Value(payload),
@@ -10,5 +11,8 @@ def concat_test(payload: str):
             output_field=CharField()
         )
     )
+    sql, params = qs.query.sql_with_params()
+    print("SQL:", sql)
+    print("PARAMS:", params)
     list(qs)
     return str(qs.query)
