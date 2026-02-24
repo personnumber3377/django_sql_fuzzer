@@ -10,21 +10,13 @@ def filteredrelation_alias(payload: str):
     when alias names weren't sanitized.
     """
     # print("payload: "+str(payload))
-
+    # qs = Book.objects.annotate(**{payload: FilteredRelation("author")}).values(payload)
     try:
         # Annotate using the fuzzed alias
+        print("Payload string: "+str(payload))
         qs = Book.objects.annotate(**{
             payload: FilteredRelation("author")
         }).values(payload)
-
-        # Force SQL generation containing the annotation alias
-        # print(qs.explain())         # <--- absolutely required
-
-        # Force Django to SELECT the annotation column
-        # print("payload: "+str(payload))
-        # print("HERE IS THE EXECUTED SQL STUFF: "+str(qs.query))
-
-        # list(qs)    # <--- also required
         return str(qs.query)
     except (FieldError, ValueError, TypeError) as e:
         # print("exception:", e)

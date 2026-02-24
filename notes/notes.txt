@@ -1,0 +1,4 @@
+
+The fuzzer uses atheris which is a coverage guided fuzzer developed by google. It essentially does for python what AFL and libFuzzer do for C and C++.
+
+
