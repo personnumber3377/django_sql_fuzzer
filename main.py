@@ -33,7 +33,7 @@ def check_sql_semantics(sql: str, payload: str):
     # 1. Raw dangerous tokens
     for tok in [";", "--", "/*", "*/"]:
         if tok in sql:
-            raise False
+            return False
 
     # 2. Period-based alias confusion
     if "." in payload:
@@ -46,7 +46,7 @@ def check_sql_semantics(sql: str, payload: str):
         # bad: split on period
         parts = payload.split(".", 1)
         if parts[0] in sql and parts[1] in sql:
-            raise False
+            return False
     return True
 
 def fuzz_entry(data: bytes):
