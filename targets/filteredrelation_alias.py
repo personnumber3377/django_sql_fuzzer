@@ -4,6 +4,8 @@ from django.db.utils import OperationalError
 from app.models import Author
 from app.models import Book
 
+import traceback
+
 def filteredrelation_alias(payload: str):
     """
     Fuzz the alias name of FilteredRelation. Past CVEs allowed SQL injection
@@ -19,6 +21,7 @@ def filteredrelation_alias(payload: str):
         }).values(payload)
         return str(qs.query)
     except (FieldError, ValueError, TypeError) as e:
-        # print("exception:", e)
+        print("exception:", e)
+        print(traceback.format_exc())
         return
     return

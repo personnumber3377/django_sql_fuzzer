@@ -159,6 +159,7 @@ def fuzz_entry(data: bytes):
     try:
         dprint("calling "+str(TARGETS[idx])+" ...")
         sql_query = TARGETS[idx](payload)
+        print("after...")
         if sql_query != None:
             dprint("sql_query: "+str(sql_query))
             print(sql_query)
@@ -173,15 +174,14 @@ def fuzz_entry(data: bytes):
             # if not check_sql_semantics(sql_query, payload):
             #     raise SQLValidationError
     except SAFE_EXCEPTIONS as e:
-        # print(str(e))
-        # print("in safe exceptions...")
+        print(str(e))
+        print("in safe exceptions...")
         return
     except Exception as e:
         # return
         msg = str(e)
-        '''
         print(msg)
-        print("poopooo")
+        '''
         print(msg)
         print(IGNORED_MESSAGES)
         '''
@@ -232,6 +232,7 @@ def testing_main(): # Stuff...
 
         try:
             fuzz_entry(pwn)
+            print("Done")
         except Exception as e:
             print("Got this exception here: "+str(e))
             fh = open("failed.bin", "wb")

@@ -1,4 +1,63 @@
 
 The fuzzer uses atheris which is a coverage guided fuzzer developed by google. It essentially does for python what AFL and libFuzzer do for C and C++.
 
+The fuzzer works by taking one byte from the input and then using that as an index into a list of "target functions" which each do something interesting with the django sql operations. Then after the operation is done, the result is checked for interesting exceptions like a database error or something signifying broken SQL. Then the resulting query is passed to a function called `check_sql_semantics` which, as the name implies, checks the resulting query (which is returned as a string from the target function) for suspicious patterns. This checker is still quite broken and does a lot of false positive results and should not be trusted yet.
 
+Out-Of-Memory:
+
+(venv) oof@elskun-lppri:~/django_sql_fuzzer$ TESTING=1 python3 main.py out_of_memory.txt
+/home/oof/django_sql_fuzzer/main.py:112: SyntaxWarning: invalid escape sequence '\s'
+  '''
+/home/oof/django_sql_fuzzer/main.py:126: SyntaxWarning: invalid escape sequence '\s'
+  '''
+/home/oof/venv/lib/python3.12/site-packages/django/db/models/base.py:368: RuntimeWarning: Model 'app.author' was already registered. Reloading models is not advised as it can lead to inconsistencies, most notably with related models.
+  new_class._meta.apps.register_model(new_class._meta.app_label, new_class)
+Using prespecified input: b'\r\\l666%666666664666s'
+[DEBUG] calling <function filteredrelation_alias at 0x78a4224c2340> ...
+Payload string: \l666%666666664666s
+Got this exception here:
+Traceback (most recent call last):
+  File "/home/oof/django_sql_fuzzer/main.py", line 245, in <module>
+    testing_main()
+  File "/home/oof/django_sql_fuzzer/main.py", line 240, in testing_main
+    raise e
+  File "/home/oof/django_sql_fuzzer/main.py", line 234, in testing_main
+    fuzz_entry(pwn)
+  File "/home/oof/django_sql_fuzzer/main.py", line 161, in fuzz_entry
+    sql_query = TARGETS[idx](payload)
+                ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/oof/django_sql_fuzzer/targets/filteredrelation_alias.py", line 20, in filteredrelation_alias
+    return str(qs.query)
+           ^^^^^^^^^^^^^
+  File "/home/oof/venv/lib/python3.12/site-packages/django/db/models/sql/query.py", line 342, in __str__
+    sql, params = self.sql_with_params()
+                  ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/oof/venv/lib/python3.12/site-packages/django/db/models/sql/query.py", line 350, in sql_with_params
+    return self.get_compiler(DEFAULT_DB_ALIAS).as_sql()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/oof/venv/lib/python3.12/site-packages/django/db/models/sql/compiler.py", line 791, in as_sql
+    from_, f_params = self.get_from_clause()
+                      ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/oof/venv/lib/python3.12/site-packages/django/db/models/sql/compiler.py", line 1158, in get_from_clause
+    clause_sql, clause_params = self.compile(from_clause)
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/oof/venv/lib/python3.12/site-packages/django/db/models/sql/compiler.py", line 577, in compile
+    sql, params = node.as_sql(self, self.connection)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/oof/venv/lib/python3.12/site-packages/django/db/models/sql/datastructures.py", line 115, in as_sql
+    rhs_full_name = rhs_sql % rhs_params
+                    ~~~~~~~~^~~~~~~~~~~~
+MemoryError
+
+adding a debug statement to print those rhs_sql and rhs_params yields:
+
+```
+rhs_sql: \l666%666666664666s.`id`
+type(rhs_sql): <class 'str'>
+rhs_params: []
+type(rhs_params): <class 'list'>
+```
+
+and sure enough, if I type `"%1000000000s" % []` into a python interpreter, I am getting OOM. It is actually a format string bug.
+
+SQL-Injection: The fuzzer also found a potential SQL injection, but I am quite sure that this is a false positive. Still decided to mention in case it is not and I am misunderstanding something. It is in a file called sqli.txt and you can run it the same way `TESTING=1 python3 main.py sqli.txt` . This seems to stem from the fact that when using concatenation in sql queries, the checker function called `check_sql_semantics` is too eager and reports the `SELECT `app_author`.`id`, `app_author`.`name`, CONCAT_WS('',  OR 1=1/*otas_book --, test) AS `c` FROM `app_author`` query as sql injection because it seems to break context, however, the value is passed in as an argument which can be seen from `qs.query.sql_with_params()`, but from the string representation of the query it seems to break context even though it doesn't in reality.

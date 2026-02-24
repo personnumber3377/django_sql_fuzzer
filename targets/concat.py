@@ -14,5 +14,6 @@ def concat_test(payload: str):
     sql, params = qs.query.sql_with_params()
     print("SQL:", sql)
     print("PARAMS:", params)
+    print("str(qs.query): "+str(str(qs.query)))
     list(qs)
     return str(qs.query)
