@@ -4,6 +4,12 @@ import sys
 import os
 import random
 
+DEBUG = True
+
+def dprint(msg):
+    if DEBUG:
+        print("[DEBUG] "+str(msg))
+
 class SQLValidationError(Exception): # Use when checking the generated SQL query for potentially dangerous stuff...
     pass
 
@@ -70,14 +76,17 @@ SQL_KEYWORDS = [
     " limit ",
 ]
 
+def strip_string_literals(sql: str) -> str:
+    return re.sub(r"'([^']|'')*'", "''", sql)
 
 def check_sql_semantics(sql: str, payload: str):
     sql_lower = sql.lower()
     payload_lower = payload.lower()
 
-    # 1️⃣ Comment-based truncation
-    if "--" in sql or "/*" in sql or "*/" in sql:
-        raise SQLInjectionDetected("Comment token present in SQL")
+    sql_code = strip_string_literals(sql)
+
+    if "--" in sql_code or "/*" in sql_code:
+        raise SQLInjectionDetected("Comment token present outside string")
 
     # 2️⃣ Ensure payload appears
     if payload not in sql:
@@ -124,12 +133,13 @@ def fuzz_entry(data: bytes):
         return
     payload = s # s[1:]
     try:
-        # print("calling "+str(TARGETS[idx])+" ...")
+        dprint("calling "+str(TARGETS[idx])+" ...")
         sql_query = TARGETS[idx](payload)
         if sql_query != None:
             # Check the query thing...
-            if not check_sql_semantics(sql_query, payload):
-                raise SQLValidationError
+            check_sql_semantics(sql_query, payload)
+            # if not check_sql_semantics(sql_query, payload):
+            #     raise SQLValidationError
     except SAFE_EXCEPTIONS as e:
         # print(str(e))
         # print("in safe exceptions...")

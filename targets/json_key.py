@@ -13,6 +13,7 @@ def json_key(payload: str):
     )
     try:
         list(qs)
+        print("query: "+str(str(qs.query)))
         return str(qs.query)
     except (OperationalError, ProgrammingError, ValueError, TypeError, FieldError):
         return str(qs.query)
