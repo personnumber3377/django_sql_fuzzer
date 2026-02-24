@@ -44,14 +44,15 @@ def complex_annotation(payload: str):
             ),
             Exists(Book.objects.filter(**{f"{payload}__id": OuterRef("pk")})),
         ]
-
+        queries = []
         for expr in exprs:
             # This is the vulnerable pattern: complex annotation w/out alias
             qs = Book.objects.annotate(expr)
 
             # Force evaluation
             list(qs)
-
+            queries.append(qs.query)
+        return queries
     except (FieldError, ValueError, TypeError, OperationalError):
         # Safe compiler/ORM errors → acceptable
         return

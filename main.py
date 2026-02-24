@@ -77,49 +77,60 @@ SQL_KEYWORDS = [
 ]
 
 def strip_string_literals(sql: str) -> str:
+    # Remove single-quoted string literals
     return re.sub(r"'([^']|'')*'", "''", sql)
 
+
 def check_sql_semantics(sql: str, payload: str):
+    if not payload:
+        return True
+
     sql_lower = sql.lower()
     payload_lower = payload.lower()
 
+    # Strip string literals before structural analysis
     sql_code = strip_string_literals(sql)
+    sql_code_lower = sql_code.lower()
 
-    if "--" in sql_code or "/*" in sql_code:
-        raise SQLInjectionDetected("Comment token present outside string")
+    # 1️⃣ Comment tokens outside string literals
+    if "--" in sql_code or "/*" in sql_code or "*/" in sql_code:
+        raise SQLInjectionDetected("Comment token present outside string literal")
 
-    # 2️⃣ Ensure payload appears
+    # 2️⃣ Payload must appear somewhere
     if payload not in sql:
         raise SQLInjectionDetected("Payload disappeared from SQL")
 
-    # 3️⃣ Detect payload appearing outside identifier context
-    # If payload is followed or preceded by spaces + keyword,
-    # it's likely escaped identifier position.
+    # 3️⃣ Detect payload transitioning into SQL keyword (outside strings)
     for kw in SQL_KEYWORDS:
-        if payload_lower + kw in sql_lower:
+        if payload_lower + kw in sql_code_lower:
             raise SQLInjectionDetected(
                 f"Payload transitions into SQL keyword: {kw.strip()}"
             )
 
-    # 4️⃣ Detect JOIN condition replacement
-    # If "ON 1=1" appears, that's structural change
-    if re.search(r"\bon\s+1\s*=\s*1\b", sql_lower):
+    # 4️⃣ Detect obvious JOIN replacement
+    if re.search(r"\bon\s+1\s*=\s*1\b", sql_code_lower):
         raise SQLInjectionDetected("JOIN condition replaced with ON 1=1")
 
-    # 5️⃣ Period alias confusion
+    # 5️⃣ Period alias confusion (robust version)
     if "." in payload:
         parts = payload.split(".", 1)
-        # If split parts appear independently, alias was parsed as table.column
-        if all(part in sql for part in parts):
-            raise SQLInjectionDetected("Alias split on period")
 
-    # 6️⃣ Ensure payload appears only once
-    if sql.count(payload) > 3:
-        # More than expected occurrences → possible grammar expansion
+        # Ignore empty parts (important fix)
+        parts = [p for p in parts if p]
+
+        if len(parts) == 2:
+            left, right = parts
+
+            # Detect pattern like: left.`right`
+            pattern = rf"{re.escape(left)}\s*\.\s*`?{re.escape(right)}"
+            if re.search(pattern, sql_code):
+                raise SQLInjectionDetected("Alias interpreted as table.column")
+
+    # 6️⃣ Excessive payload expansion
+    if sql.count(payload) > 5:
         raise SQLInjectionDetected("Payload expanded unexpectedly")
 
     return True
-
 
 def fuzz_entry(data: bytes):
     if len(data) < 2:
@@ -136,7 +147,11 @@ def fuzz_entry(data: bytes):
         dprint("calling "+str(TARGETS[idx])+" ...")
         sql_query = TARGETS[idx](payload)
         if sql_query != None:
-            # check_sql_semantics(sql_query, payload)
+            if isinstance(sql_query, list):
+                for q in sql_query:
+                  check_sql_semantics(q, payload)
+            else: 
+                check_sql_semantics(sql_query, payload)
             return
             # Check the query thing...
             # check_sql_semantics(sql_query, payload)
