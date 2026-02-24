@@ -4,7 +4,7 @@ import sys
 import os
 import random
 
-DEBUG = False
+DEBUG = True
 
 def dprint(msg):
     if DEBUG:
@@ -147,6 +147,7 @@ def fuzz_entry(data: bytes):
         dprint("calling "+str(TARGETS[idx])+" ...")
         sql_query = TARGETS[idx](payload)
         if sql_query != None:
+            dprint("sql_query: "+str(sql_query))
             if isinstance(sql_query, list):
                 for q in sql_query:
                   check_sql_semantics(q, payload)
