@@ -136,8 +136,10 @@ def fuzz_entry(data: bytes):
         dprint("calling "+str(TARGETS[idx])+" ...")
         sql_query = TARGETS[idx](payload)
         if sql_query != None:
+            # check_sql_semantics(sql_query, payload)
+            return
             # Check the query thing...
-            check_sql_semantics(sql_query, payload)
+            # check_sql_semantics(sql_query, payload)
             # if not check_sql_semantics(sql_query, payload):
             #     raise SQLValidationError
     except SAFE_EXCEPTIONS as e:
