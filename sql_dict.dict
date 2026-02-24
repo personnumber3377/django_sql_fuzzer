@@ -66,3 +66,22 @@
 "11:22"
 
 "2025-11-20"
+
+"alias ON 1=1 --"
+"alias ON 1=1 #"
+"alias ON 1=1 /*"
+"alias INNER JOIN app_author b ON 1=1 --"
+"alias LEFT JOIN app_author b ON 1=1 --"
+"alias JOIN app_author b ON 1=1 --"
+
+
+"table.column"
+"app_author.id"
+"ordering_article.pub_date"
+"a.b"
+"alias.id"
+"id.name"
+
+
+"$[**]"
+
