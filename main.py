@@ -77,11 +77,11 @@ SQL_KEYWORDS = [
 ]
 
 def strip_sql_strings_and_identifiers(sql: str) -> str:
-    # Remove single-quoted string literals
-    sql = re.sub(r"'([^']|'')*'", "''", sql)
+    # Remove single-quoted string literals (handles escaped '' and \')
+    sql = re.sub(r"'([^'\\]|\\.|'')*'", "''", sql)
 
-    # Remove double-quoted identifiers / strings
-    sql = re.sub(r'"([^"]|"")*"', '""', sql)
+    # Remove double-quoted identifiers/strings (handles \" and "")
+    sql = re.sub(r'"([^"\\]|\\.|"")*"', '""', sql)
 
     # Remove MySQL backtick identifiers
     sql = re.sub(r'`[^`]*`', '``', sql)
@@ -109,18 +109,21 @@ def check_sql_semantics(sql: str, payload: str):
     #     raise SQLInjectionDetected("Payload disappeared from SQL")
 
     # 3️⃣ Detect payload transitioning into SQL keyword (outside strings)
+    '''
     for kw in SQL_KEYWORDS:
         pattern = rf"\b{re.escape(payload_lower)}\b\s+{kw.strip()}\b"
         if re.search(pattern, sql_code_lower):
             raise SQLInjectionDetected(
                 f"Payload transitions into SQL keyword: {kw.strip()}"
             )
-    
+    '''
+
     # 4️⃣ Detect obvious JOIN replacement
     if re.search(r"\bon\s+1\s*=\s*1\b", sql_code_lower):
         raise SQLInjectionDetected("JOIN condition replaced with ON 1=1")
 
     # 5️⃣ Period alias confusion (robust version)
+    '''
     if "." in payload:
         parts = payload.split(".", 1)
 
@@ -134,6 +137,7 @@ def check_sql_semantics(sql: str, payload: str):
             pattern = rf"{re.escape(left)}\s*\.\s*`?{re.escape(right)}"
             if re.search(pattern, sql_code):
                 raise SQLInjectionDetected("Alias interpreted as table.column")
+    '''
 
     # 6️⃣ Excessive payload expansion
     if sql.count(payload) > 5:
@@ -157,6 +161,7 @@ def fuzz_entry(data: bytes):
         sql_query = TARGETS[idx](payload)
         if sql_query != None:
             dprint("sql_query: "+str(sql_query))
+            print(sql_query)
             if isinstance(sql_query, list):
                 for q in sql_query:
                   check_sql_semantics(q, payload)

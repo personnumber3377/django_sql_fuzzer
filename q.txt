@@ -1,0 +1,4 @@
+SELECT `app_author`.`id`, `app_author`.`name`, CONCAT_WS('', malicious.thing, test) AS `c` FROM `app_author`
+
+
+SELECT `app_author`.`id`, `app_author`.`name`, malicious.thingtest AS `c` FROM `app_author`

@@ -144,3 +144,31 @@ tt{mwwwwwwwwe{me(venv) oof@oof-h8-1440eo:~/django_sql_fuzzer$ xxd -g 1 ./crash-7
 
 
 
+Base64: cHNfa194Zy4vY3Vyc19pYWVzbndjdHRvcg==
+(venv) oof@oof-h8-1440eo:~/django_sql_fuzzer$ 
+(venv) oof@oof-h8-1440eo:~/django_sql_fuzzer$ TESTING=1 python3 main.py ./crash-358bde3270fd0befdbaa08c08a0b5247f9f1b844 
+/home/oof/venv/lib/python3.11/site-packages/django/db/models/base.py:368: RuntimeWarning: Model 'app.author' was already registered. Reloading models is not advised as it can lead to inconsistencies, most notably with related models.
+  new_class._meta.apps.register_model(new_class._meta.app_label, new_class)
+Using prespecified input: b'ps_k_xg./curs_iaesnwcttor'
+[DEBUG] calling <function concat_test at 0x7f12cb3ce8e0> ...
+[DEBUG] sql_query: SELECT `app_author`.`id`, `app_author`.`name`, CONCAT_WS('', s_k_xg./curs_iaesnwcttor, test) AS `c` FROM `app_author`
+Got this exception here: Alias interpreted as table.column
+Traceback (most recent call last):
+  File "/home/oof/django_sql_fuzzer/main.py", line 242, in <module>
+    testing_main()
+  File "/home/oof/django_sql_fuzzer/main.py", line 237, in testing_main
+    raise e
+  File "/home/oof/django_sql_fuzzer/main.py", line 231, in testing_main
+    fuzz_entry(pwn)
+  File "/home/oof/django_sql_fuzzer/main.py", line 166, in fuzz_entry
+    check_sql_semantics(sql_query, payload)
+  File "/home/oof/django_sql_fuzzer/main.py", line 138, in check_sql_semantics
+    raise SQLInjectionDetected("Alias interpreted as table.column")
+SQLInjectionDetected: Alias interpreted as table.column
+(venv) oof@oof-h8-1440eo:~/django_sql_fuzzer$ xxd -g 1 ./crash-358bde3270fd0befdbaa08c08a0b5247f9f1b844 
+00000000: 70 73 5f 6b 5f 78 67 2e 2f 63 75 72 73 5f 69 61  ps_k_xg./curs_ia
+00000010: 65 73 6e 77 63 74 74 6f 72                       esnwcttor
+(venv) oof@oof-h8-1440eo:~/django_sql_fuzzer$ 
+
+
+
