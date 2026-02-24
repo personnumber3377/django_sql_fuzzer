@@ -46,3 +46,101 @@ def testing_main(): # Stuff...
 
 can potentially cause some injection, since there is a unicode character...
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#1392	NEW    cov: 1429 ft: 2573 corp: 36/116b lim: 8 exec/s: 1392 rss: 76Mb L: 6/6 MS: 5 ShuffleBytes-PersAutoDict-ChangeByte-ChangeBinInt-ChangeBinInt- DE: "ceo"-
+#2004	REDUCE cov: 1429 ft: 2573 corp: 36/115b lim: 14 exec/s: 1002 rss: 76Mb L: 2/6 MS: 2 InsertByte-EraseBytes-
+#2048	pulse  cov: 1429 ft: 2573 corp: 36/115b lim: 14 exec/s: 1024 rss: 76Mb
+#2890	NEW    cov: 1429 ft: 2578 corp: 37/118b lim: 21 exec/s: 963 rss: 76Mb L: 3/6 MS: 1 ChangeBinInt-
+
+ === Uncaught Python exception: ===
+ProgrammingError: (1064, "You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '{mwwwwwwwwe{me ON (`app_book`.`author_id` = t{mwwwwwwwwe{me.`id`) ORDER BY t{mww' at line 1")
+Traceback (most recent call last):
+  File "/home/oof/django_sql_fuzzer/main.py", line 65, in fuzz_entry
+    sql_query = TARGETS[idx](payload)
+                ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/oof/django_sql_fuzzer/targets/filtered_relation_new.py", line 11, in filtered_relation_new
+    list(qs)
+  File "/home/oof/venv/lib/python3.11/site-packages/django/db/models/query.py", line 386, in __iter__
+    self._fetch_all()
+  File "/home/oof/venv/lib/python3.11/site-packages/django/db/models/query.py", line 1954, in _fetch_all
+    self._result_cache = list(self._iterable_class(self))
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/oof/venv/lib/python3.11/site-packages/django/db/models/query.py", line 93, in __iter__
+    results = compiler.execute_sql(
+              ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/oof/venv/lib/python3.11/site-packages/django/db/models/sql/compiler.py", line 1623, in execute_sql
+    cursor.execute(sql, params)
+  File "/home/oof/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 79, in execute
+    return self._execute_with_wrappers(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/oof/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 92, in _execute_with_wrappers
+    return executor(sql, params, many, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/oof/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 100, in _execute
+    with self.db.wrap_database_errors:
+  File "/home/oof/venv/lib/python3.11/site-packages/django/db/utils.py", line 91, in __exit__
+    raise dj_exc_value.with_traceback(traceback) from exc_value
+  File "/home/oof/venv/lib/python3.11/site-packages/django/db/backends/utils.py", line 105, in _execute
+    return self.cursor.execute(sql, params)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/oof/venv/lib/python3.11/site-packages/django/db/backends/mysql/base.py", line 76, in execute
+    return self.cursor.execute(query, args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/oof/venv/lib/python3.11/site-packages/MySQLdb/cursors.py", line 179, in execute
+    res = self._query(mogrified_query)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/oof/venv/lib/python3.11/site-packages/MySQLdb/cursors.py", line 330, in _query
+    db.query(q)
+  File "/home/oof/venv/lib/python3.11/site-packages/MySQLdb/connections.py", line 286, in query
+    _mysql.connection.query(self, query)
+ProgrammingError: (1064, "You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near '{mwwwwwwwwe{me ON (`app_book`.`author_id` = t{mwwwwwwwwe{me.`id`) ORDER BY t{mww' at line 1")
+
+==41449== ERROR: libFuzzer: fuzz target exited
+SUMMARY: libFuzzer: fuzz target exited
+MS: 2 CopyPart-InsertRepeatedBytes-; base unit: 31aa798b9b1746d61d1e78037b97915152046f84
+0x74,0x74,0x7b,0x6d,0x77,0x77,0x77,0x77,0x77,0x77,0x77,0x77,0x65,0x7b,0x6d,0x65,
+tt{mwwwwwwwwe{me
+artifact_prefix='./'; Test unit written to ./crash-7a61de185581854660e531cacbeda63d05ad6f98
+Base64: dHR7bXd3d3d3d3d3ZXttZQ==
+(venv) oof@oof-h8-1440eo:~/django_sql_fuzzer$ cat ./crash-7a61de185581854660e531cacbeda63d05ad6f98 
+tt{mwwwwwwwwe{me(venv) oof@oof-h8-1440eo:~/django_sql_fuzzer$ xxd -g 1 ./crash-7a61de185581854660e531cacbeda63d05ad6f./crash-7a61de185581854660e531cacbeda63d05ad6f98 
+00000000: 74 74 7b 6d 77 77 77 77 77 77 77 77 65 7b 6d 65  tt{mwwwwwwwwe{me
+(venv) oof@oof-h8-1440eo:~/django_sql_fuzzer$ 
+
+
+
+
+

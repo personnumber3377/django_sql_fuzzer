@@ -10,5 +10,6 @@ def order_by(payload: str):
     try:
         qs = Book.objects.order_by(payload)
         list(qs)
+        return str(qs.query)
     except (FieldError, ValueError, TypeError):
-        return
+        return str(qs.query)

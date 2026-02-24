@@ -10,15 +10,17 @@ def window(payload: str):
     """
     Fuzz identifier-like uses in Window() OVER clauses.
     """
-    try:
-        qs = Book.objects.annotate(
-            rn=Window(
-                expression=RowNumber(),
-                partition_by=[F(payload)],
-                order_by=[payload],
-            )
+
+    qs = Book.objects.annotate(
+        rn=Window(
+            expression=RowNumber(),
+            partition_by=[F(payload)],
+            order_by=[payload],
         )
+    )
+    try:
         list(qs)
+        return str(qs.query)
     except (OperationalError, ProgrammingError, ValueError, TypeError, FieldError):
-        return
+        return str(qs.query)
 

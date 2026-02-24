@@ -7,3 +7,4 @@ def filteredrelation_alias(payload):
         **{payload: FilteredRelation("book", condition=Q(book__rating=F(payload)))}
     )
     list(qs)
+    return str(qs.query)
