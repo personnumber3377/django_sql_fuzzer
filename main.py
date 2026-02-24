@@ -101,13 +101,12 @@ def check_sql_semantics(sql: str, payload: str):
     #     raise SQLInjectionDetected("Payload disappeared from SQL")
 
     # 3️⃣ Detect payload transitioning into SQL keyword (outside strings)
-    '''
     for kw in SQL_KEYWORDS:
-        if payload_lower + kw in sql_code_lower:
+        pattern = rf"\b{re.escape(payload_lower)}\b\s+{kw.strip()}\b"
+        if re.search(pattern, sql_code_lower):
             raise SQLInjectionDetected(
                 f"Payload transitions into SQL keyword: {kw.strip()}"
             )
-    '''
     
     # 4️⃣ Detect obvious JOIN replacement
     if re.search(r"\bon\s+1\s*=\s*1\b", sql_code_lower):
