@@ -9,7 +9,7 @@ def extract_function(payload: str):
         qs = DTModel.objects.filter(start_datetime__year=Extract("end_datetime", payload))
         list(qs)
     except (ProgrammingError) as e:
-        return str(qs.query)
+        return qs.query
     # print(str(qs.query))
     # list(qs) # Execute the query actually...
-    return str(qs.query)
+    return qs.query

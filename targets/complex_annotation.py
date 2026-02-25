@@ -51,8 +51,8 @@ def complex_annotation(payload: str):
 
             # Force evaluation
             list(qs)
-            sql, params = qs.query.sql_with_params()
-            queries.append(tuple((sql, params)))
+            # sql, params = qs.query.sql_with_params()
+            queries.append(qs.query)
         return queries
     except (FieldError, ValueError, TypeError, OperationalError):
         # Safe compiler/ORM errors → acceptable

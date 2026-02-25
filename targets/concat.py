@@ -11,5 +11,5 @@ def concat_test(payload: str):
             output_field=CharField()
         )
     )
-    sql, params = qs.query.sql_with_params()
-    return tuple((sql, params))
+    list(qs)
+    return qs.query

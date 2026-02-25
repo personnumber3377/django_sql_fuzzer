@@ -14,6 +14,6 @@ def extra(payload: str):
             tables=[payload],
         )
         list(qs)
-        return str(qs.query)
+        return qs.query
     except (OperationalError, ValueError, TypeError):
-        return str(qs.query)
+        return qs.query
