@@ -210,7 +210,7 @@ def testing_main(): # Stuff...
             fh = open(sys.argv[1], "rb")
             pwn = fh.read()
             fh.close()
-            print("Using prespecified input: "+str(pwn))
+            dprint("Using prespecified input: "+str(pwn))
         else:
             pwn = bytes([random.randrange(256) for _ in range(random.randrange(256))])
         # Override 
@@ -232,9 +232,9 @@ def testing_main(): # Stuff...
 
         try:
             fuzz_entry(pwn)
-            print("Done")
+            dprint("Done")
         except Exception as e:
-            print("Got this exception here: "+str(e))
+            dprint("Got this exception here: "+str(e))
             fh = open("failed.bin", "wb")
             fh.write(pwn)
             fh.close()
