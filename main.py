@@ -159,7 +159,7 @@ def fuzz_entry(data: bytes):
     try:
         dprint("calling "+str(TARGETS[idx])+" ...")
         sql_query = TARGETS[idx](payload)
-        print("after...")
+        # print("after...")
         if sql_query != None:
             dprint("sql_query: "+str(sql_query))
             print(sql_query)
