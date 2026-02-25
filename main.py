@@ -61,27 +61,54 @@ def strip_sql_strings_and_identifiers(sql: str) -> str:
 
     return sql
 
+def check_sql_semantics(sql: str, params, payload: str):
+    """
+    sql      -> SQL template (with %s placeholders)
+    params   -> tuple/list of bound parameters
+    payload  -> original fuzz payload
+    """
 
-def check_sql_semantics(sql: str, payload: str):
     if not payload:
         return True
 
     sql_lower = sql.lower()
     payload_lower = payload.lower()
 
-    # Strip string literals before structural analysis
+    # Ensure params is iterable
+    if params is None:
+        params = ()
+    elif not isinstance(params, (list, tuple)):
+        params = (params,)
+
+    # -------------------------------------------------
+    # 1️⃣ Ensure payload is NOT directly embedded into SQL template
+    # (it should only appear in params, never in sql string itself)
+    # -------------------------------------------------
+    if payload_lower in sql_lower:
+        raise SQLInjectionDetected("Payload embedded directly in SQL template")
+
+    # -------------------------------------------------
+    # 2️⃣ Strip string literals from SQL template
+    # (structural analysis only on code-level SQL)
+    # -------------------------------------------------
     sql_code = strip_sql_strings_and_identifiers(sql)
     sql_code_lower = sql_code.lower()
 
-    # 1️⃣ Comment tokens outside string literals
+    # -------------------------------------------------
+    # 3️⃣ Comment tokens outside string literals
+    # -------------------------------------------------
     if "--" in sql_code or "/*" in sql_code or "*/" in sql_code:
         raise SQLInjectionDetected("Comment token present outside string literal")
 
-    # 2️⃣ Payload must appear somewhere
-    # if payload not in sql:
-    #     raise SQLInjectionDetected("Payload disappeared from SQL")
+    # -------------------------------------------------
+    # 4️⃣ Detect obvious JOIN replacement
+    # -------------------------------------------------
+    if re.search(r"\bon\s+1\s*=\s*1\b", sql_code_lower):
+        raise SQLInjectionDetected("JOIN condition replaced with ON 1=1")
 
-    # 3️⃣ Detect payload transitioning into SQL keyword (outside strings)
+    # -------------------------------------------------
+    # 5️⃣ Optional payload transition detection (kept commented)
+    # -------------------------------------------------
     '''
     for kw in SQL_KEYWORDS:
         pattern = rf"\b{re.escape(payload_lower)}\b\s+{kw.strip()}\b"
@@ -91,30 +118,32 @@ def check_sql_semantics(sql: str, payload: str):
             )
     '''
 
-    # 4️⃣ Detect obvious JOIN replacement
-    if re.search(r"\bon\s+1\s*=\s*1\b", sql_code_lower):
-        raise SQLInjectionDetected("JOIN condition replaced with ON 1=1")
-
-    # 5️⃣ Period alias confusion (robust version)
+    # -------------------------------------------------
+    # 6️⃣ Period alias confusion (kept commented)
+    # -------------------------------------------------
     '''
     if "." in payload:
         parts = payload.split(".", 1)
-
-        # Ignore empty parts (important fix)
         parts = [p for p in parts if p]
 
         if len(parts) == 2:
             left, right = parts
-
-            # Detect pattern like: left.`right`
             pattern = rf"{re.escape(left)}\s*\.\s*`?{re.escape(right)}"
             if re.search(pattern, sql_code):
                 raise SQLInjectionDetected("Alias interpreted as table.column")
     '''
 
-    # 6️⃣ Excessive payload expansion
-    # if sql.count(payload) > 5:
-    #     raise SQLInjectionDetected("Payload expanded unexpectedly")
+    # -------------------------------------------------
+    # 7️⃣ Parameter-level validation
+    # Ensure payload is present ONLY inside params
+    # -------------------------------------------------
+    found_in_params = any(
+        isinstance(p, str) and payload_lower in p.lower()
+        for p in params
+    )
+
+    if payload and not found_in_params:
+        raise SQLInjectionDetected("Payload missing from parameters")
 
     return True
 
@@ -134,10 +163,10 @@ def fuzz_entry(data: bytes):
             dprint("sql_query: "+str(sql_query))
             # print(sql_query)
             if isinstance(sql_query, list):
-                for q in sql_query:
-                  check_sql_semantics(q, payload)
+                for q, params in sql_query:
+                  check_sql_semantics(q, payload, params)
             else: 
-                check_sql_semantics(sql_query, payload)
+                check_sql_semantics(sql_query, payload, params)
             return
     except SAFE_EXCEPTIONS as e:
         dprint(str(e))
