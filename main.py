@@ -163,10 +163,15 @@ def fuzz_entry(data: bytes):
             dprint("sql_query: "+str(sql_query))
             # print(sql_query)
             if isinstance(sql_query, list):
-                for q, params in sql_query:
-                  check_sql_semantics(q, payload, params)
-            else: 
-                check_sql_semantics(sql_query, payload, params)
+                assert not isinstance(sql_query, str) # Must be the qs.query object, not string...
+                sql, params = sql_query.sql_with_params()
+
+                # for q, params in sql_query:
+                check_sql_semantics(sql, payload, params)
+            else:
+                assert not isinstance(sql_query, str)
+                sql, params = sql_query.sql_with_params()
+                check_sql_semantics(sql, payload, params)
             return
     except SAFE_EXCEPTIONS as e:
         dprint(str(e))
