@@ -13,6 +13,7 @@ def filteredrelation_alias(payload: str):
     """
     # print("payload: "+str(payload))
     # qs = Book.objects.annotate(**{payload: FilteredRelation("author")}).values(payload)
+    return
     try:
         # Annotate using the fuzzed alias
         # print("Payload string: "+str(payload))

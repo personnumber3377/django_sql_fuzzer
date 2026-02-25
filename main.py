@@ -211,7 +211,8 @@ def testing_main(): # Stuff...
             fh.close()
             dprint("Using prespecified input: "+str(pwn))
         else:
-            pwn = bytes([random.randrange(256) for _ in range(random.randrange(256))])
+            MAX_LEN = 10
+            pwn = bytes([random.randrange(0, 127) for _ in range(random.randrange(0, MAX_LEN))])
         # Override 
         # rand_bytes = bytes([0x1a, 0x41, 0x19, 0xdb, 0x85])
         # 82 2a e7 87 b6
