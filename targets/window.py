@@ -20,7 +20,7 @@ def window(payload: str):
     )
     try:
         list(qs)
-        return str(qs.query)
+        return qs.query
     except (OperationalError, ProgrammingError, ValueError, TypeError, FieldError):
-        return str(qs.query)
+        return qs.query
 

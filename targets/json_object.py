@@ -11,4 +11,4 @@ def json_object(payload: str):
         )
     )
     qs.first()
-    return str(qs.query)
+    return qs.query

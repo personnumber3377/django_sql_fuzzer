@@ -8,5 +8,5 @@ def qs_extra(payload):
         tables=[payload],
     )
     list(qs)
-    return str(qs.query)
+    return qs.query
     

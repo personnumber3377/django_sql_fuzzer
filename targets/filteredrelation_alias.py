@@ -20,7 +20,7 @@ def filteredrelation_alias(payload: str):
             payload: FilteredRelation("author")
         }).values(payload)
         list(qs)
-        return str(qs.query)
+        return qs.query
     except (FieldError, ValueError, TypeError) as e:
         # print("exception:", e)
         # print(traceback.format_exc())

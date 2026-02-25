@@ -6,4 +6,4 @@ def qs_annotate(payload: str):
         payload: F("age") + Value(1)
     })
     list(qs)
-    return str(qs.query)
+    return qs.query

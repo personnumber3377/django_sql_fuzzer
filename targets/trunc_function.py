@@ -6,4 +6,4 @@ def trunc_function(payload: str):
         start_datetime__date=Trunc("start_datetime", payload)
     )
     list(qs)
-    return str(qs.query)
+    return qs.query

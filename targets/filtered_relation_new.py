@@ -13,6 +13,6 @@ def filtered_relation_new(payload: str):
     try:
         list(qs)
     except (ProgrammingError) as e:
-        return str(qs.query)
-    return str(qs.query)
+        return qs.query
+    return qs.query
 

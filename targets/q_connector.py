@@ -10,4 +10,4 @@ def q_connector(payload: str):
     q._connector = payload  # dangerous
     qs = Author.objects.filter(q)
     list(qs) # Actually execute the query
-    return str(qs.query)
+    return qs.query

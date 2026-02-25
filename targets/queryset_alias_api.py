@@ -5,4 +5,4 @@ from app.models import Company
 def qs_alias_api(payload):
     qs = Company.objects.alias(**{payload: F("id")})
     list(qs)
-    return str(qs.query)
+    return qs.query
