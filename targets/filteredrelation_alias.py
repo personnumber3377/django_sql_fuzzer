@@ -15,13 +15,14 @@ def filteredrelation_alias(payload: str):
     # qs = Book.objects.annotate(**{payload: FilteredRelation("author")}).values(payload)
     try:
         # Annotate using the fuzzed alias
-        print("Payload string: "+str(payload))
+        # print("Payload string: "+str(payload))
         qs = Book.objects.annotate(**{
             payload: FilteredRelation("author")
         }).values(payload)
+        list(qs)
         return str(qs.query)
     except (FieldError, ValueError, TypeError) as e:
-        print("exception:", e)
-        print(traceback.format_exc())
+        # print("exception:", e)
+        # print(traceback.format_exc())
         return
     return
