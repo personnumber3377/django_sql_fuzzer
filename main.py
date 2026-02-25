@@ -123,7 +123,7 @@ def check_sql_semantics(sql: str, params, payload: str):
     # -------------------------------------------------
     # 6️⃣ Period alias confusion (kept commented)
     # -------------------------------------------------
-    
+    '''    
     if "." in payload:
         parts = payload.split(".", 1)
         parts = [p for p in parts if p]
@@ -133,7 +133,7 @@ def check_sql_semantics(sql: str, params, payload: str):
             pattern = rf"{re.escape(left)}\s*\.\s*`?{re.escape(right)}"
             if re.search(pattern, sql_code):
                 raise SQLInjectionDetected("Alias interpreted as table.column")
-    
+    '''
 
     # -------------------------------------------------
     # 7️⃣ Parameter-level validation
