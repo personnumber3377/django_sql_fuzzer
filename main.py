@@ -3,6 +3,7 @@ import atheris
 import sys
 import os
 import random
+import traceback
 
 DEBUG = bool(os.getenv("TESTING"))
 CHECK = True
@@ -122,7 +123,7 @@ def check_sql_semantics(sql: str, params, payload: str):
     # -------------------------------------------------
     # 6️⃣ Period alias confusion (kept commented)
     # -------------------------------------------------
-    '''
+    
     if "." in payload:
         parts = payload.split(".", 1)
         parts = [p for p in parts if p]
@@ -132,7 +133,7 @@ def check_sql_semantics(sql: str, params, payload: str):
             pattern = rf"{re.escape(left)}\s*\.\s*`?{re.escape(right)}"
             if re.search(pattern, sql_code):
                 raise SQLInjectionDetected("Alias interpreted as table.column")
-    '''
+    
 
     # -------------------------------------------------
     # 7️⃣ Parameter-level validation
@@ -178,11 +179,25 @@ def fuzz_entry(data: bytes):
                 return
 
     except SAFE_EXCEPTIONS as e:
+        '''
+        print("Encountered safe exception: "+str(e))
+        print("target: "+str(TARGETS[idx]))
+        print("payload: "+str(payload))
+        print("With backtrace: ")
+        print(traceback.format_exc())
+        '''
         dprint(str(e))
         dprint("in safe exceptions...")
         return
     except Exception as e:
         # return
+        '''
+        print("Encountered other exception: "+str(e))
+        print("target: "+str(TARGETS[idx]))
+        print("payload: "+str(payload))
+        print("With backtrace: ")
+        print(traceback.format_exc())
+        '''
         msg = str(e)
         dprint(msg)
         if any(m in msg for m in IGNORED_MESSAGES):
